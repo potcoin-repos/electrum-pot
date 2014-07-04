@@ -510,7 +510,7 @@ class Transaction:
             h = addr[10:].encode('hex')
             return '6a' + push_script(h)
         addrtype, hash_160 = bc_address_to_hash_160(addr)
-        if addrtype == 0:
+        if addrtype == 55:
             script = '76a9'                                      # op_dup, op_hash_160
             script += push_script(hash_160.encode('hex'))
             script += '88ac'                                     # op_equalverify, op_checksig
