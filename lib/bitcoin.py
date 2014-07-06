@@ -38,7 +38,7 @@ except ImportError:
 
 ################################## transactions
 
-MIN_RELAY_TX_FEE = 1000
+MIN_RELAY_TX_FEE = 100000
 
 
 # AES encryption

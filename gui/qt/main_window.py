@@ -1017,7 +1017,7 @@ class ElectrumWindow(QMainWindow):
             if not self.question(_("send %(amount)s to %(address)s?")%{ 'amount' : self.format_amount(amount) + ' '+ self.base_unit(), 'address' : o}):
                 return
             
-        confirm_fee = self.config.get('confirm_fee', 100000)
+        confirm_fee = self.config.get('confirm_fee', 1000000)
         if fee >= confirm_fee:
             if not self.question(_("The fee for this transaction seems unusually high.\nAre you really sure you want to pay %(fee)s in fees?")%{ 'fee' : self.format_amount(fee) + ' '+ self.base_unit()}):
                 return
@@ -2488,7 +2488,7 @@ class ElectrumWindow(QMainWindow):
         fee_e.setAmount(self.wallet.fee)
         grid.addWidget(fee_e, 2, 1)
         msg = _('Fee per kilobyte of transaction.') + '\n' \
-            + _('Recommended value') + ': ' + self.format_amount(10000) + ' ' + self.base_unit()
+            + _('Recommended value') + ': ' + self.format_amount(100000) + ' ' + self.base_unit()
         grid.addWidget(HelpButton(msg), 2, 2)
         if not self.config.is_modifiable('fee_per_kb'):
             for w in [fee_e, fee_label]: w.setEnabled(False)
