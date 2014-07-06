@@ -13,7 +13,7 @@ version = imp.load_source('version', 'lib/version.py')
 util = imp.load_source('version', 'lib/util.py')
 
 if sys.version_info[:3] < (2, 6, 0):
-    sys.exit("Error: Electrum requires Python version >= 2.6.0...")
+    sys.exit("Error: Electrum-POT requires Python version >= 2.6.0...")
 
 usr_share = '/usr/share'
 if not os.access(usr_share, os.W_OK):
@@ -118,10 +118,10 @@ setup(
         'electrum_plugins.qrscanner',
         'electrum_plugins.virtualkeyboard',
     ],
-    description="Lightweight Bitcoin Wallet",
+    description="Lightweight Potcoin Wallet",
     author="Thomas Voegtlin",
     author_email="thomasv1@gmx.de",
     license="GNU GPLv3",
     url="https://electrum.org",
-    long_description="""Lightweight Bitcoin Wallet"""
+    long_description="""Lightweight Potcoin Wallet"""
 )

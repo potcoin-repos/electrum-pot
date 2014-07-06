@@ -2,13 +2,13 @@
 # sudo desktop-file-install electrum.desktop
 
 [Desktop Entry]
-Comment=Lightweight Bitcoin Client
-Exec=electrum %u
-GenericName[en_US]=Electrum
-GenericName=Electrum
-Icon=/usr/share/app-install/icons/electrum.png
-Name[en_US]=Electrum Bitcoin Wallet
-Name=Electrum Bitcoin Wallet
+Comment=Lightweight Potcoin Client
+Exec=electrum-pot %u
+GenericName[en_US]=Electrum-POT
+GenericName=Electrum-POT
+Icon=/usr/share/app-install/icons/electrum-pot.png
+Name[en_US]=Electrum Potcoin Wallet
+Name=Electrum Potcoin Wallet
 Categories=Network;
 StartupNotify=false
 Terminal=false

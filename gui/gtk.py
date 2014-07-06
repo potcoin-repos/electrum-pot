@@ -787,7 +787,7 @@ class ElectrumWindow:
             to_address = r
 
         if not is_valid(to_address):
-            self.show_message( "invalid bitcoin address:\n"+to_address)
+            self.show_message( "invalid potcoin address:\n"+to_address)
             return
 
         try:
