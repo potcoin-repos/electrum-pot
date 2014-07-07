@@ -2,10 +2,10 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 import PyQt4.QtCore as QtCore
 
-from electrum.i18n import _
-from electrum import Wallet, Wallet_2of2, Wallet_2of3
-from electrum import bitcoin
-from electrum import util
+from electrum_pot.i18n import _
+from electrum_pot import Wallet, Wallet_2of2, Wallet_2of3
+from electrum_pot import bitcoin
+from electrum_pot import util
 
 import seed_dialog
 from network_dialog import NetworkDialog
@@ -14,7 +14,7 @@ from amountedit import AmountEdit
 
 import sys
 import threading
-from electrum.plugins import run_hook
+from electrum_pot.plugins import run_hook
 
 
 MSG_ENTER_ANYTHING    = _("Please enter a wallet seed, a master public key, a list of Bitcoin addresses, or a list of private keys")
@@ -234,7 +234,7 @@ class InstallWizard(QDialog):
 
 
 
-    def waiting_dialog(self, task, msg= _("Electrum is generating your addresses, please wait.")):
+    def waiting_dialog(self, task, msg= _("Electrum-POT is generating your addresses, please wait.")):
         def target():
             task()
             self.emit(QtCore.SIGNAL('accept'))
@@ -255,7 +255,7 @@ class InstallWizard(QDialog):
         grid = QGridLayout()
         grid.setSpacing(5)
 
-        label = QLabel(_("Electrum communicates with remote servers to get information about your transactions and addresses. The servers all fulfil the same purpose only differing in hardware. In most cases you simply want to let Electrum pick one at random if you have a preference though feel free to select a server manually.") + "\n\n" \
+        label = QLabel(_("Electrum-POT communicates with remote servers to get information about your transactions and addresses. The servers all fulfil the same purpose only differing in hardware. In most cases you simply want to let Electrum pick one at random if you have a preference though feel free to select a server manually.") + "\n\n" \
                       + _("How do you want to connect to a server:")+" ")
         label.setWordWrap(True)
         grid.addWidget(label, 0, 0)

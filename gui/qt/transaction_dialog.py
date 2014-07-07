@@ -17,8 +17,8 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import sys, time, datetime, re, threading
-from electrum.i18n import _, set_language
-from electrum.util import print_error, print_msg
+from electrum_pot.i18n import _, set_language
+from electrum_pot.util import print_error, print_msg
 import os.path, json, ast, traceback
 import shutil
 import StringIO
@@ -33,8 +33,8 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 import PyQt4.QtCore as QtCore
 
-from electrum import transaction
-from electrum.plugins import run_hook
+from electrum_pot import transaction
+from electrum_pot.plugins import run_hook
 
 from util import MyTreeWidget
 

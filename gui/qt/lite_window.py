@@ -13,24 +13,24 @@ except ImportError:
     sys.exit(0)
 
 from decimal import Decimal as D
-from electrum.util import get_resource_path as rsrc
-from electrum.bitcoin import is_valid
-from electrum.i18n import _
+from electrum_pot.util import get_resource_path as rsrc
+from electrum_pot.bitcoin import is_valid
+from electrum_pot.i18n import _
 import decimal
 import json
 import os.path
 import random
 import re
 import time
-from electrum.wallet import Wallet, WalletStorage
+from electrum_pot.wallet import Wallet, WalletStorage
 import webbrowser
 import history_widget
 import receiving_widget
-from electrum import util
+from electrum_pot import util
 import datetime
 
-from electrum.version import ELECTRUM_VERSION as electrum_version
-from electrum.util import format_satoshis, age
+from electrum_pot.version import ELECTRUM_VERSION as electrum_version
+from electrum_pot.util import format_satoshis, age
 
 from main_window import ElectrumWindow
 import shutil
@@ -388,7 +388,7 @@ class MiniWindow(QDialog):
     def create_quote_text(self, btc_balance):
         """Return a string copy of the amount fiat currency the 
         user has in bitcoins."""
-        from electrum.plugins import run_hook
+        from electrum_pot.plugins import run_hook
         r = {}
         run_hook('get_fiat_balance_text', btc_balance, r)
         return r.get(0,'')

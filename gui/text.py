@@ -2,10 +2,10 @@ import curses, datetime, locale
 from decimal import Decimal
 _ = lambda x:x
 #from i18n import _
-from electrum.util import format_satoshis, set_verbosity
-from electrum.bitcoin import is_valid
+from electrum_pot.util import format_satoshis, set_verbosity
+from electrum_pot.bitcoin import is_valid
 
-from electrum import Wallet, WalletStorage
+from electrum_pot import Wallet, WalletStorage
 
 import tty, sys
 
@@ -247,7 +247,7 @@ class ElectrumGui:
             
     def run_contacts_tab(self, c):
         if c == 10 and self.wallet.addressbook:
-            out = self.run_popup('Adress', ["Copy", "Pay to", "Edit label", "Delete"]).get('button')
+            out = self.run_popup('Address', ["Copy", "Pay to", "Edit label", "Delete"]).get('button')
             address = self.wallet.addressbook[self.pos%len(self.wallet.addressbook)]
             if out == "Pay to":
                 self.tab = 1

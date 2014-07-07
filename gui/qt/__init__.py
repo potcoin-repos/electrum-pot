@@ -17,9 +17,9 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import sys, time, datetime, re, threading
-from electrum.i18n import _, set_language
-from electrum.util import print_error, print_msg
-from electrum.plugins import run_hook
+from electrum_pot.i18n import _, set_language
+from electrum_pot.util import print_error, print_msg
+from electrum_pot.plugins import run_hook
 import os.path, json, ast, traceback
 import shutil
 
@@ -33,9 +33,9 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 import PyQt4.QtCore as QtCore
 
-from electrum import WalletStorage, Wallet
-from electrum.i18n import _
-from electrum.bitcoin import MIN_RELAY_TX_FEE
+from electrum_pot import WalletStorage, Wallet
+from electrum_pot.i18n import _
+from electrum_pot.bitcoin import MIN_RELAY_TX_FEE
 
 try:
     import icons_rc
@@ -44,7 +44,7 @@ except Exception:
 
 from util import *
 from main_window import ElectrumWindow
-from electrum.plugins import init_plugins
+from electrum_pot.plugins import init_plugins
 
 
 class OpenFileEventFilter(QObject):

@@ -11,17 +11,17 @@ Homepage: https://electrum-pot.org/
 
 To run Electrum from this directory, just do:
 
-  ./electrum
+  ./electrum-pot
 
-If you install Electrum on your system, you can run it from any
+If you install Electrum-POT on your system, you can run it from any
 directory:
 
   sudo python setup.py install
-  electrum
+  electrum-pot
 
 
 To start Electrum from your web browser, see
-http://electrum.org/bitcoin_URIs.html
+http://electrum-pot.org/potcoin_URIs.html
 
 
 
@@ -40,6 +40,6 @@ On Mac OS X:
   # On brew installs
   ARCHFLAGS="-arch i386 -arch x86_64" sudo python setup-release.py py2app --includes sip
 
-  sudo hdiutil create -fs HFS+ -volname "Electrum" -srcfolder dist/Electrum.app dist/electrum-VERSION-macosx.dmg
+  sudo hdiutil create -fs HFS+ -volname "Electrum-POT" -srcfolder dist/Electrum-POT.app dist/electrum-pot-VERSION-macosx.dmg
 
 

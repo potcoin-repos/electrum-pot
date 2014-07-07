@@ -8,9 +8,9 @@ from PyQt4.QtCore import *
 import PyQt4.QtCore as QtCore
 import PyQt4.QtGui as QtGui
 
-from electrum_gui.qt.qrcodewidget import QRCodeWidget
-from electrum import BasePlugin
-from electrum.i18n import _
+from electrum_pot_gui.qt.qrcodewidget import QRCodeWidget
+from electrum_pot import BasePlugin
+from electrum_pot.i18n import _
 
 
 if platform.system() == 'Windows':
