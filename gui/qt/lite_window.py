@@ -127,8 +127,8 @@ class MiniWindow(QDialog):
         self.actuator = actuator
         self.config = config
         self.btc_balance = None
-        self.use_exchanges = ["Blockchain", "CoinDesk"]
-        self.quote_currencies = ["BRL", "CNY", "EUR", "GBP", "RUB", "USD"]
+        self.use_exchanges = ["Cryptsy"]
+        self.quote_currencies = ["BTC", "USD"]
         self.actuator.set_configured_currency(self.set_quote_currency)
         self.actuator.set_configured_exchange(self.set_exchange)
 
@@ -149,7 +149,7 @@ class MiniWindow(QDialog):
 
         self.address_input.textChanged.connect(self.address_field_changed)
         resize_line_edit_width(self.address_input,
-                               "1BtaFUr3qVvAmwrsuDuu5zk6e4s2rxd2Gy")
+                               "P9nCfakgQoKM7Lsb9bMxFx3YhUQ2GzWoZs")
 
         self.address_completions = QStringListModel()
         address_completer = QCompleter(self.address_input)
@@ -253,7 +253,7 @@ class MiniWindow(QDialog):
         show_hist = self.config.get("gui_show_receiving",False)
         self.toggle_receiving_layout(show_hist)
         
-        self.setWindowIcon(QIcon(":icons/electrum.png"))
+        self.setWindowIcon(QIcon(":icons/electrum-pot.png"))
         self.setWindowTitle("Electrum-POT")
         self.setWindowFlags(Qt.Window|Qt.MSWindowsFixedSizeDialogHint)
         self.layout().setSizeConstraint(QLayout.SetFixedSize)
@@ -367,7 +367,7 @@ class MiniWindow(QDialog):
         unit = self.actuator.g.base_unit()
 
         self.balance_label.set_balance_text(amount, unit, quote_text)
-        self.setWindowTitle("Electrum %s - %s %s" % (electrum_version, amount, unit))
+        self.setWindowTitle("Electrum-POT %s - %s %s" % (electrum_version, amount, unit))
 
     def amount_input_changed(self, amount_text):
         """Update the number of bitcoins displayed."""

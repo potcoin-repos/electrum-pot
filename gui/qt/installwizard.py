@@ -33,7 +33,7 @@ class InstallWizard(QDialog):
         self.network = network
         self.storage = storage
         self.setMinimumSize(575, 400)
-        self.setWindowTitle('Electrum')
+        self.setWindowTitle('Electrum-POT')
         self.connect(self, QtCore.SIGNAL('accept'), self.accept)
 
         self.stack = QStackedLayout()
@@ -50,7 +50,7 @@ class InstallWizard(QDialog):
 
         vbox = QVBoxLayout()
 
-        main_label = QLabel(_("Electrum could not find an existing wallet."))
+        main_label = QLabel(_("Electrum-POT could not find an existing wallet."))
         vbox.addWidget(main_label)
 
         grid = QGridLayout()
@@ -255,7 +255,7 @@ class InstallWizard(QDialog):
         grid = QGridLayout()
         grid.setSpacing(5)
 
-        label = QLabel(_("Electrum-POT communicates with remote servers to get information about your transactions and addresses. The servers all fulfil the same purpose only differing in hardware. In most cases you simply want to let Electrum pick one at random if you have a preference though feel free to select a server manually.") + "\n\n" \
+        label = QLabel(_("Electrum-POT communicates with remote servers to get information about your transactions and addresses. The servers all fulfil the same purpose only differing in hardware. In most cases you simply want to let Electrum-POT pick one at random if you have a preference though feel free to select a server manually.") + "\n\n" \
                       + _("How do you want to connect to a server:")+" ")
         label.setWordWrap(True)
         grid.addWidget(label, 0, 0)
@@ -344,7 +344,7 @@ class InstallWizard(QDialog):
 
 
     def create_cold_seed(self, wallet):
-        from electrum.bitcoin import mnemonic_to_seed, bip32_root
+        from electrum_pot.bitcoin import mnemonic_to_seed, bip32_root
         msg = _('You are about to generate the cold storage seed of your wallet.') + '\n' \
               + _('For safety, you should do this on an offline computer.')
         icon = QPixmap( ':icons/cold_seed.png').scaledToWidth(56)
