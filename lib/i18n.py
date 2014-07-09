@@ -33,7 +33,7 @@ def _(x):
     txt = language.ugettext(x)
     for b, p in coinlist:
         txt = txt.replace(b, p)
-    return t
+    return txt
 
 def set_language(x):
     global language
