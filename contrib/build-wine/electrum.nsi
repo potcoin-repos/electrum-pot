@@ -7,14 +7,14 @@
 ;General
 
   ;Name and file
-  Name "Electrum"
-  OutFile "dist/electrum-setup.exe"
+  Name "Electrum-POT"
+  OutFile "dist/electrum-pot-setup.exe"
 
   ;Default installation folder
-  InstallDir "$PROGRAMFILES\Electrum"
+  InstallDir "$PROGRAMFILES\Electrum-POT"
 
   ;Get installation folder from registry if available
-  InstallDirRegKey HKCU "Software\Electrum" ""
+  InstallDirRegKey HKCU "Software\Electrum-POT" ""
 
   ;Request application privileges for Windows Vista
   RequestExecutionLevel admin
@@ -36,7 +36,7 @@
 
   ;Start Menu Folder Page Configuration
   !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU"
-  !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\Electrum"
+  !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\Electrum-POT"
   !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
 
   ;!insertmacro MUI_PAGE_STARTMENU Application $StartMenuFolder
@@ -62,18 +62,18 @@ Section
   file /r dist\electrum\*.*
 
   ;Store installation folder
-  WriteRegStr HKCU "Software\Electrum" "" $INSTDIR
+  WriteRegStr HKCU "Software\Electrum-POT" "" $INSTDIR
 
   ;Create uninstaller
   WriteUninstaller "$INSTDIR\Uninstall.exe"
 
 
-  CreateShortCut "$DESKTOP\Electrum.lnk" "$INSTDIR\electrum.exe" ""
+  CreateShortCut "$DESKTOP\Electrum-POT.lnk" "$INSTDIR\electrum-pot.exe" ""
 
   ;create start-menu items
-  CreateDirectory "$SMPROGRAMS\Electrum"
-  CreateShortCut "$SMPROGRAMS\Electrum\Uninstall.lnk" "$INSTDIR\Uninstall.exe" "" "$INSTDIR\Uninstall.exe" 0
-  CreateShortCut "$SMPROGRAMS\Electrum\Electrum.lnk" "$INSTDIR\electrum.exe" "" "$INSTDIR\electrum.exe" 0
+  CreateDirectory "$SMPROGRAMS\Electrum-POT"
+  CreateShortCut "$SMPROGRAMS\Electrum-POT\Uninstall.lnk" "$INSTDIR\Uninstall.exe" "" "$INSTDIR\Uninstall.exe" 0
+  CreateShortCut "$SMPROGRAMS\Electrum-POT\Electrum-POT.lnk" "$INSTDIR\electrum-pot.exe" "" "$INSTDIR\electrum-pot.exe" 0
 
 SectionEnd
 
@@ -95,10 +95,10 @@ Section "Uninstall"
 
   RMDir "$INSTDIR"
 
-  Delete "$DESKTOP\Electrum.lnk"
-  Delete "$SMPROGRAMS\Electrum\*.*"
-  RmDir  "$SMPROGRAMS\Electrum"
+  Delete "$DESKTOP\Electrum-POT.lnk"
+  Delete "$SMPROGRAMS\Electrum-POT\*.*"
+  RmDir  "$SMPROGRAMS\Electrum-POT"
 
-  DeleteRegKey /ifempty HKCU "Software\Electrum"
+  DeleteRegKey /ifempty HKCU "Software\Electrum-POT"
 
 SectionEnd
