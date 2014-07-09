@@ -249,8 +249,8 @@ class Blockchain(threading.Thread):
         if chain is None:
             chain = []  # Do not use mutables as default values!
 
-        max_target = 0x00000FFFF0000000000000000000000000000000000000000000000000000000
-        if index == 0: return 0x1e0ffff0, max_target
+        max_target = 0x00000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+        if index == 0: return 0x1e0ffff0, 0x00000FFFF0000000000000000000000000000000000000000000000000000000
 
         # Potcoin: Go back the full period unless it's the first retarget after genesis
         if index == 1:
