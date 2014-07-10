@@ -30,6 +30,7 @@ class SeedDialog(QDialog):
         QDialog.__init__(self, parent)
         self.setModal(1)
         self.setWindowTitle('Electrum-POT' + ' - ' + _('Seed'))
+        self.setMinimumWidth(400)
         vbox = show_seed_box(seed)
         if imported_keys:
             vbox.addWidget(QLabel("<b>"+_("WARNING")+":</b> " + _("Your wallet contains imported keys. These keys cannot be recovered from seed.") + "</b><p>"))
