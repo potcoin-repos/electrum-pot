@@ -75,7 +75,7 @@ PR_ERROR   = 4     # could not parse
 from electrum_pot import ELECTRUM_VERSION
 import re
 
-from util import *
+from util import MyTreeWidget, HelpButton, EnterButton, line_dialog, text_dialog, ok_cancel_buttons, close_button, WaitingDialog
 
 
 def format_status(x):
@@ -286,12 +286,20 @@ class ElectrumWindow(QMainWindow):
         import installwizard
 
         wallet_folder = os.path.dirname(self.wallet.storage.path)
-        filename = unicode( QFileDialog.getSaveFileName(self, _('Enter a new file name'), wallet_folder) )
+        i = 1
+        while True:
+            filename = "wallet_%d"%i
+            if filename in os.listdir(wallet_folder):
+                i += 1
+            else:
+                break
+
+        filename = line_dialog(self, _('New Wallet'), _('Enter file name') + ':', _('OK'), filename)
         if not filename:
             return
-        filename = os.path.join(wallet_folder, filename)
 
-        storage = WalletStorage({'wallet_path': filename})
+        full_path = os.path.join(wallet_folder, filename)
+        storage = WalletStorage({'wallet_path': full_path})
         if storage.file_exists:
             QMessageBox.critical(None, "Error", _("File exists"))
             return
@@ -352,6 +360,7 @@ class ElectrumWindow(QMainWindow):
         raw_transaction_menu.addAction(_("&From file"), self.do_process_from_file)
         raw_transaction_menu.addAction(_("&From text"), self.do_process_from_text)
         raw_transaction_menu.addAction(_("&From the blockchain"), self.do_process_from_txid)
+        raw_transaction_menu.addAction(_("&From QR code"), self.read_tx_from_qrcode)
         self.raw_transaction_menu = raw_transaction_menu
 
         help_menu = menubar.addMenu(_("&Help"))
@@ -1303,8 +1312,10 @@ class ElectrumWindow(QMainWindow):
 
 
     def create_invoices_tab(self):
-        l, w = self.create_list_tab([_('Requestor'), _('Memo'),_('Amount'), _('Status')])
+        l, w = self.create_list_tab([_('Requestor'), _('Memo'), _('Date'), _('Amount'), _('Status')])
         l.setColumnWidth(0, 150)
+        l.setColumnWidth(2, 150)
+        l.setColumnWidth(3, 150)
         h = l.header()
         h.setStretchLastSection(False)
         h.setResizeMode(1, QHeaderView.Stretch)
@@ -1317,20 +1328,17 @@ class ElectrumWindow(QMainWindow):
         invoices = self.wallet.storage.get('invoices', {})
         l = self.invoices_list
         l.clear()
-        for key, value in invoices.items():
-            try:
-                domain, memo, amount, expiration_date, status, tx_hash = value
-            except:
-                invoices.pop(key)
-                continue
+        for key, value in sorted(invoices.items(), key=lambda x: -x[1][3]):
+            domain, memo, amount, expiration_date, status, tx_hash = value
             if status == PR_UNPAID and expiration_date and expiration_date < time.time():
                 status = PR_EXPIRED
-            item = QTreeWidgetItem( [ domain, memo, self.format_amount(amount), format_status(status)] )
+            date_str = datetime.datetime.fromtimestamp(expiration_date).isoformat(' ')[:-3]
+            item = QTreeWidgetItem( [ domain, memo, date_str, self.format_amount(amount, whitespaces=True), format_status(status)] )
+            item.setData(0, 32, key)
+            item.setFont(0, QFont(MONOSPACE_FONT))
+            item.setFont(3, QFont(MONOSPACE_FONT))
             l.addTopLevelItem(item)
-
         l.setCurrentItem(l.topLevelItem(0))
-
-
 
     def delete_imported_key(self, addr):
         if self.question(_("Do you want to remove")+" %s "%addr +_("from your wallet?")):
@@ -1483,14 +1491,16 @@ class ElectrumWindow(QMainWindow):
         pr.read_file(key)
         pr.domain = domain
         pr.verify()
-        self.show_pr_details(pr)
+        self.show_pr_details(pr, tx_hash)
 
-    def show_pr_details(self, pr):
+    def show_pr_details(self, pr, tx_hash=None):
         msg = 'Domain: ' + pr.domain
         msg += '\nStatus: ' + pr.get_status()
         msg += '\nMemo: ' + pr.get_memo()
         msg += '\nPayment URL: ' + pr.payment_url
-        msg += '\n\nOutputs:\n' + '\n'.join(map(lambda x: x[0] + ' ' + self.format_amount(x[1])+ self.base_unit(), pr.get_outputs()))
+        msg += '\n\nOutputs:\n' + '\n'.join(map(lambda x: x[1] + ' ' + self.format_amount(x[2])+ self.base_unit(), pr.get_outputs()))
+        if tx_hash:
+            msg += '\n\nTransaction ID: ' + tx_hash
         QMessageBox.information(self, 'Invoice', msg , 'OK')
 
     def do_pay_invoice(self, key):
@@ -1511,8 +1521,7 @@ class ElectrumWindow(QMainWindow):
         item = self.invoices_list.itemAt(position)
         if not item:
             return
-        k = self.invoices_list.indexOfTopLevelItem(item)
-        key = self.invoices.keys()[k]
+        key = str(item.data(0, 32).toString())
         domain, memo, value, expiration, status, tx_hash = self.invoices[key]
         menu = QMenu()
         menu.addAction(_("Details"), lambda: self.show_invoice(key))
@@ -2078,6 +2087,21 @@ class ElectrumWindow(QMainWindow):
             traceback.print_exc(file=sys.stdout)
             QMessageBox.critical(None, _("Unable to parse transaction"), _("Electrum-POT was unable to parse your transaction"))
 
+
+    def read_tx_from_qrcode(self):
+        data = run_hook('scan_qr_hook')
+        if not data:
+            return
+        # transactions are binary, but qrcode seems to return utf8...
+        z = data.decode('utf8')
+        s = ''
+        for b in z:
+            s += chr(ord(b))
+        data = s.encode('hex')
+        tx = self.tx_from_text(data)
+        if not tx:
+            return
+        self.show_transaction(tx)
 
 
     def read_tx_from_file(self):
