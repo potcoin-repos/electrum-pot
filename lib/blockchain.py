@@ -118,7 +118,7 @@ class Blockchain(threading.Thread):
             _hash = self.pow_hash_header(header)
             try:
                 assert prev_hash == header.get('prev_block_hash')
-                assert bits == header.get('bits')
+                #assert bits == header.get('bits')
                 assert int('0x'+_hash,16) < target
             except Exception:
                 return False
@@ -149,7 +149,7 @@ class Blockchain(threading.Thread):
             header = self.header_from_string(raw_header)
             _hash = self.pow_hash_header(header)
             assert previous_hash == header.get('prev_block_hash')
-            assert bits == header.get('bits')
+            #assert bits == header.get('bits')
             assert int('0x'+_hash,16) < target
 
             previous_header = header
@@ -264,7 +264,7 @@ class Blockchain(threading.Thread):
                     last = h
  
         nActualTimespan = last.get('timestamp') - first.get('timestamp')
-        nTargetTimespan = 108 * 40
+        nTargetTimespan = 40
         nActualTimespan = max(nActualTimespan, nTargetTimespan/4)
         nActualTimespan = min(nActualTimespan, nTargetTimespan*4)
 
