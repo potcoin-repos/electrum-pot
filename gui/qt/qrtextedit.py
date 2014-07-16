@@ -35,6 +35,6 @@ class QRTextEdit(QTextEdit):
         QRDialog(str(self.toPlainText())).exec_()
 
     def qr_input(self):
-        from electrum.plugins import run_hook
+        from electrum_pot.plugins import run_hook
         if not run_hook('scan_qr_hook', self.scan_f):
             QMessageBox.warning(self, _('Error'), _('QR Scanner not enabled'), _('OK'))
