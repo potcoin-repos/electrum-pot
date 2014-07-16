@@ -52,7 +52,7 @@ def filter_protocol(servers, p):
     return l
     
 
-def pick_random_server(p='s'):
+def pick_random_server(p='t'):
     return random.choice( filter_protocol(DEFAULT_SERVERS,p) )
 
 from simple_config import SimpleConfig
