@@ -29,7 +29,7 @@ class Exchanger(threading.Thread):
         self.query_rates = threading.Event()
         self.use_exchange = self.parent.config.get('use_exchange', "Cryptsy")
         self.parent.exchanges = EXCHANGES
-        self.parent.currencies = ["EUR","GBP","USD"]
+        self.parent.currencies = ["USD"]
         self.parent.win.emit(SIGNAL("refresh_exchanges_combo()"))
         self.parent.win.emit(SIGNAL("refresh_currencies_combo()"))
         self.is_running = False
@@ -76,13 +76,6 @@ class Exchanger(threading.Thread):
             quote_currencies = self.quote_currencies.copy()
         if quote_currency not in quote_currencies:
             return None
-        if self.use_exchange == "Cryptsy":
-            try:
-                resp_rate = self.get_json_requests('http://pubapi.cryptsy.com', "/api.php?method=singlemarketdata&marketid=173")
-                lastp = resp_rate['return']['markets']['POT']['lasttradeprice']
-            except Exception:
-                return
-            return btc_amount * decimal.Decimal(str(lastp))
         return btc_amount * decimal.Decimal(str(quote_currencies[quote_currency]))
 
     def stop(self):
@@ -91,7 +84,7 @@ class Exchanger(threading.Thread):
     def update_rate(self):
         self.use_exchange = self.parent.config.get('use_exchange', "Cryptsy")
         update_rates = {
-            "BitPay": self.update_bp,
+            "Cryptsy": self.update_cy,
         }
         try:
             update_rates[self.use_exchange]()
@@ -112,15 +105,24 @@ class Exchanger(threading.Thread):
             self.quote_currencies = quote_currencies
         self.parent.set_currencies(quote_currencies)
 
-    def update_bp(self):
+    def update_cy(self):
+        quote_currencies = {"USD": 0.0}
+        resp_rate = self.get_json_requests('http://pubapi.cryptsy.com', "/api.php?method=singlemarketdata&marketid=2")
+        respstr = resp_rate['return']['markets']['BTC']['lasttradeprice']
         try:
-            jsonresp = self.get_json('bitpay.com', "/api/rates")
+            btc_usd = float(respstr)
         except Exception:
             return
-        quote_currencies = {}
+
+        resp_rate = self.get_json_requests('http://pubapi.cryptsy.com', "/api.php?method=singlemarketdata&marketid=173")
+        respstr = resp_rate['return']['markets']['POT']['lasttradeprice']
         try:
-            for r in jsonresp:
-                quote_currencies[str(r["code"])] = decimal.Decimal(r["rate"])
+            pot_btc = float(respstr)
+        except Exception:
+            return
+        lastp = pot_btc*btc_usd
+        try:
+            quote_currencies['USD'] = decimal.Decimal(str(lastp))
             with self.lock:
                 self.quote_currencies = quote_currencies
         except KeyError:
