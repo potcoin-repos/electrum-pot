@@ -1055,6 +1055,8 @@ class ElectrumWindow(QMainWindow):
             try:
                 self.wallet.add_keypairs(tx, keypairs, password)
                 self.wallet.sign_transaction(tx, keypairs, password)
+                if sys.platform == 'win32':
+                    print('signed tx')
             except Exception as e:
                 tx.error = str(e)
             return tx
