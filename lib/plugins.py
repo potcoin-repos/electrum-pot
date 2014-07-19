@@ -17,8 +17,8 @@ def init_plugins(self):
         imp.load_module('electrum_pot_plugins', fp, pathname, description)
         plugin_modules = map(lambda name: imp.load_source('electrum_pot_plugins.'+name, os.path.join(pathname,name+'.py')), plugin_names)
     else:
-        import electrum_plugins
-        plugin_names = [name for a, name, b in pkgutil.iter_modules(electrum_plugins.__path__)]
+        import electrum_pot_plugins
+        plugin_names = [name for a, name, b in pkgutil.iter_modules(electrum_pot_plugins.__path__)]
         plugin_modules = [ __import__('electrum_pot_plugins.'+name, fromlist=['electrum_pot_plugins']) for name in plugin_names]
 
     for name, p in zip(plugin_names, plugin_modules):
