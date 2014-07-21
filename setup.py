@@ -79,6 +79,7 @@ setup(
         'electrum_pot.paymentrequest',
         'electrum_pot.paymentrequest_pb2',
         'electrum_pot.plugins',
+        'electrum_pot.scrypt',
         'electrum_pot.simple_config',
         'electrum_pot.socks',
         'electrum_pot.synchronizer',

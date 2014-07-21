@@ -18,9 +18,13 @@
 
 
 import threading, time, Queue, os, sys, shutil
-from util import user_dir, appdata_dir, print_error
+from util import user_dir, appdata_dir, print_error, print_msg
 from bitcoin import *
-from ltc_scrypt import getPoWHash
+try:
+    from ltc_scrypt import getPoWHash
+except ImportError:
+    print_msg('')
+    from scrypt import scrypt_1024_1_1_80 as getPoWHash
 
 
 class Blockchain(threading.Thread):
