@@ -1,4 +1,4 @@
-from electrum.i18n import _
+from electrum_pot.i18n import _
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
@@ -34,7 +34,7 @@ class QRTextEdit(QPlainTextEdit):
         QRDialog(str(self.toPlainText())).exec_()
 
     def qr_input(self):
-        from electrum.plugins import run_hook
+        from electrum_pot.plugins import run_hook
         data = run_hook('scan_qr_hook')
         if type(data) != str:
             return
