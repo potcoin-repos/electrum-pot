@@ -7,6 +7,8 @@ from blockchain import Blockchain
 DEFAULT_PORTS = {'t':'50001', 's':'50002', 'h':'8081', 'g':'8082'}
 
 DEFAULT_SERVERS = {
+    'electrum-pot.mooo.com': DEFAULT_PORTS,
+    'epot.markmayer.net': DEFAULT_PORTS,
     '162.243.80.208': DEFAULT_PORTS,
 }
 
@@ -52,7 +54,7 @@ def filter_protocol(servers, p):
     return l
     
 
-def pick_random_server(p='t'):
+def pick_random_server(p='s'):
     return random.choice( filter_protocol(DEFAULT_SERVERS,p) )
 
 from simple_config import SimpleConfig
