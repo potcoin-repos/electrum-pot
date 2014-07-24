@@ -29,7 +29,7 @@ class Exchanger(threading.Thread):
         self.query_rates = threading.Event()
         self.use_exchange = self.parent.config.get('use_exchange', "Cryptsy")
         self.parent.exchanges = EXCHANGES
-        self.parent.currencies = ["USD"]
+        self.parent.currencies = ["BTC", "USD"]
         self.parent.win.emit(SIGNAL("refresh_exchanges_combo()"))
         self.parent.win.emit(SIGNAL("refresh_currencies_combo()"))
         self.is_running = False
@@ -98,15 +98,8 @@ class Exchanger(threading.Thread):
             self.update_rate()
             self.query_rates.wait(150)
 
-        quote_currencies = {}
-        for cur in resp_currencies:
-            quote_currencies[str(cur["currency"])] = 0.0
-        with self.lock:
-            self.quote_currencies = quote_currencies
-        self.parent.set_currencies(quote_currencies)
-
     def update_cy(self):
-        quote_currencies = {"USD": 0.0}
+        quote_currencies = {"BTC": 0.0, "USD": 0.0}
         resp_rate = self.get_json_requests('http://pubapi.cryptsy.com', "/api.php?method=singlemarketdata&marketid=2")
         respstr = resp_rate['return']['markets']['BTC']['lasttradeprice']
         try:
@@ -122,6 +115,7 @@ class Exchanger(threading.Thread):
             return
         lastp = pot_btc*btc_usd
         try:
+            quote_currencies['BTC'] = decimal.Decimal(str(pot_btc))
             quote_currencies['USD'] = decimal.Decimal(str(lastp))
             with self.lock:
                 self.quote_currencies = quote_currencies
@@ -191,14 +185,16 @@ class Plugin(BasePlugin):
         if quote:
             price_text = "1 POT~%s"%quote
             fiat_currency = quote[-3:]
+            zero_modifier = "(%.8f %s)" if fiat_currency == 'BTC' else "(%.2f %s)"
             btc_price = self.btc_rate
             fiat_balance = Decimal(btc_price) * (Decimal(btc_balance)/100000000)
-            balance_text = "(%.2f %s)" % (fiat_balance,fiat_currency)
+            balance_text = zero_modifier % (fiat_balance,fiat_currency)
             text = "  " + balance_text + "     " + price_text + " "
         r2[0] = text
 
     def create_fiat_balance_text(self, btc_balance):
         quote_currency = self.fiat_unit()
+        zero_modifier = "%.8f %s" if quote_currency == 'BTC' else "%.2f %s"
         self.exchanger.use_exchange = self.config.get("use_exchange", "Cryptsy")
         cur_rate = self.exchanger.exchange(Decimal("1.0"), quote_currency)
         if cur_rate is None:
@@ -206,7 +202,7 @@ class Plugin(BasePlugin):
         else:
             quote_balance = btc_balance * Decimal(cur_rate)
             self.btc_rate = cur_rate
-            quote_text = "%.2f %s" % (quote_balance, quote_currency)
+            quote_text = zero_modifier % (quote_balance, quote_currency)
         return quote_text
 
     def load_wallet(self, wallet):
