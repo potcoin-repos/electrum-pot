@@ -514,8 +514,8 @@ class ElectrumWindow(QMainWindow):
         self.history_list.selectedIndexes()
         item = self.history_list.currentItem()
         be = self.config.get('block_explorer', 'potchain.net')
-        if be == 'potchain.net':
-            block_explorer = 'http://potchain.net/tx/'
+        #if be == 'potchain.net':
+        block_explorer = 'http://potchain.net/tx/'
         if not item: return
         tx_hash = str(item.data(0, Qt.UserRole).toString())
         if not tx_hash: return
