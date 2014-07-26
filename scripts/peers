@@ -6,7 +6,7 @@ from electrum_pot.network import filter_protocol, parse_servers
 from collections import defaultdict
 
 # 1. start interface and wait for connection
-interface = electrum.Interface('electrum-pot.mooo.com:50002:s')
+interface = electrum.Interface('electrum-pot.org:50002:s')
 interface.start(wait = True)
 if not interface.is_connected:
     print "not connected"
