@@ -123,7 +123,7 @@ class Blockchain(threading.Thread):
             try:
                 print('vchain: prev hash assertion')
                 assert prev_hash == header.get('prev_block_hash')
-                print('vchain: {0} == {1} [{2}]'.format(hex(bits), hex(header.get('bits')), header.get('bits') - bits))
+                print('vchain: {0} == {1} [{2}]'.format(hex(bits), hex(header.get('bits')), header.get('block_height')))
                 assert bits == header.get('bits')
                 print('vchain: [+] bits assertion success')
                 assert int('0x'+_hash,16) < target
@@ -158,7 +158,7 @@ class Blockchain(threading.Thread):
             if height > 280000:
                 bits, target = self.get_target(height, data=data)
             assert previous_hash == header.get('prev_block_hash')
-            print('vchain: {0} == {1} [{2}]'.format(hex(bits), hex(header.get('bits')), header.get('bits') - bits))
+            print('vchain: {0} == {1} [{2}]'.format(hex(bits), hex(header.get('bits')), header.get('block_height')))
             assert bits == header.get('bits')
             print('vchunk: [+] bits assertion success')
             assert int('0x'+_hash,16) < target
@@ -256,15 +256,17 @@ class Blockchain(threading.Thread):
                 return h 
 
 
-    def get_target(self, index, chain=None):
+    def get_target(self, index, chain=None, data=None):
         if chain is None:
             chain = []  # Do not use mutables as default values!
 
         max_target = 0x00000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         if index == 0: return 0x1e0ffff0, 0x00000FFFF0000000000000000000000000000000000000000000000000000000
+       
+        print('get_target: {0}'.format(index))
         
         digishield = False
-        if index > 280000:
+        if index*107 > 280000:
             digishield = True   
         
         if digishield and data:
@@ -281,15 +283,15 @@ class Blockchain(threading.Thread):
                 last = None
             if last is None:
                 for h in chain:
-                    if h.get('block_height') == index-1:
+                    if h.get('block_height') == index*107-1:
                         last = h
         elif digishield:
             try:
-                last = self.read_header(index)
+                last = self.read_header(index*107)
             except Exception:
                 pass
             try:
-                first = self.read_header(index-1)
+                first = self.read_header(index*107-1)
             except Exception:
                 pass
         else:
@@ -302,9 +304,9 @@ class Blockchain(threading.Thread):
                 for h in chain:
                     if h.get('block_height') == index*107-1:
                         last = h
-        print('get_target: {0}'.format(index))
+        
         # Potcoin: Go back the full period unless it's the first retarget after genesis
-        print('get_target: first = {0}, last = {1}'.format((index-1)*107-1, index*107-1))
+        #print('get_target: first = {0}, last = {1}'.format((index-1)*107-1, index*107-1))
         nActualTimespan = last.get('timestamp') - first.get('timestamp')
         nTargetTimespan = 40
         nActualTimespan = max(nActualTimespan, nTargetTimespan/4)
