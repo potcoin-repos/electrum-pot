@@ -118,11 +118,14 @@ class Blockchain(threading.Thread):
             height = header.get('block_height')
 
             prev_hash = self.hash_header(prev_header)
-            bits, target = self.get_target(height/2016, chain)
+            bits, target = self.get_target(height/107, chain) #height/2016
             _hash = self.pow_hash_header(header)
             try:
+                print('vchain: prev hash assertion')
                 assert prev_hash == header.get('prev_block_hash')
-                #assert bits == header.get('bits')
+                print('vchain: {0} == {1} [{2}]'.format(hex(bits), hex(header.get('bits')), header.get('bits') - bits))
+                assert bits == header.get('bits')
+                print('vchain: [+] bits assertion success')
                 assert int('0x'+_hash,16) < target
             except Exception:
                 return False
@@ -135,25 +138,29 @@ class Blockchain(threading.Thread):
 
     def verify_chunk(self, index, hexdata):
         data = hexdata.decode('hex')
-        height = index*2016
+        height = index*107
         num = len(data)/80
 
         if index == 0:  
             previous_hash = ("0"*64)
         else:
-            prev_header = self.read_header(index*2016-1)
+            prev_header = self.read_header(index*107-1)
             if prev_header is None: raise
             previous_hash = self.hash_header(prev_header)
 
         bits, target = self.get_target(index)
 
         for i in range(num):
-            height = index*2016 + i
+            height = index*107 + i
             raw_header = data[i*80:(i+1)*80]
             header = self.header_from_string(raw_header)
             _hash = self.pow_hash_header(header)
+            if height > 280000:
+                bits, target = self.get_target(height, data=data)
             assert previous_hash == header.get('prev_block_hash')
-            #assert bits == header.get('bits')
+            print('vchain: {0} == {1} [{2}]'.format(hex(bits), hex(header.get('bits')), header.get('bits') - bits))
+            assert bits == header.get('bits')
+            print('vchunk: [+] bits assertion success')
             assert int('0x'+_hash,16) < target
 
             previous_header = header
@@ -212,7 +219,7 @@ class Blockchain(threading.Thread):
     def save_chunk(self, index, chunk):
         filename = self.path()
         f = open(filename,'rb+')
-        f.seek(index*2016*80)
+        f.seek(index*107*80)
         h = f.write(chunk)
         f.close()
         self.set_local_height()
@@ -255,18 +262,49 @@ class Blockchain(threading.Thread):
 
         max_target = 0x00000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         if index == 0: return 0x1e0ffff0, 0x00000FFFF0000000000000000000000000000000000000000000000000000000
-
-        # Potcoin: Go back the full period unless it's the first retarget after genesis
-        if index == 1:
-            first = self.read_header(0)
+        
+        digishield = False
+        if index > 280000:
+            digishield = True   
+        
+        if digishield and data:
+            m = index % 107
+            if m == 0:
+                first = self.read_header(index-1)
+            else:
+                raw_header = data[(m-1)*80:m*80]
+                first = self.header_from_string(raw_header)
+            try:
+                raw_l_header = data[m*80:(m+1)*80]
+                last = self.header_from_string(raw_l_header)
+            except:
+                last = None
+            if last is None:
+                for h in chain:
+                    if h.get('block_height') == index-1:
+                        last = h
+        elif digishield:
+            try:
+                last = self.read_header(index)
+            except Exception:
+                pass
+            try:
+                first = self.read_header(index-1)
+            except Exception:
+                pass
         else:
-            first = self.read_header((index-1)*2016-1)
-        last = self.read_header(index*2016-1)
-        if last is None:
-            for h in chain:
-                if h.get('block_height') == index*2016-1:
-                    last = h
- 
+            if index == 1:
+                first = self.read_header(0)
+            else:
+                first = self.read_header((index-1)*107-1)
+            last = self.read_header(index*107-1)
+            if last is None:
+                for h in chain:
+                    if h.get('block_height') == index*107-1:
+                        last = h
+        print('get_target: {0}'.format(index))
+        # Potcoin: Go back the full period unless it's the first retarget after genesis
+        print('get_target: first = {0}, last = {1}'.format((index-1)*107-1, index*107-1))
         nActualTimespan = last.get('timestamp') - first.get('timestamp')
         nTargetTimespan = 40
         nActualTimespan = max(nActualTimespan, nTargetTimespan/4)
@@ -368,8 +406,8 @@ class Blockchain(threading.Thread):
     def get_and_verify_chunks(self, i, header, height):
 
         queue = Queue.Queue()
-        min_index = (self.local_height + 1)/2016
-        max_index = (height + 1)/2016
+        min_index = (self.local_height + 1)/107
+        max_index = (height + 1)/107
         n = min_index
         while n < max_index + 1:
             print_error( "Requesting chunk:", n )
